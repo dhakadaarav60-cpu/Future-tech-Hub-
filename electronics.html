@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Drag Drop Circuit Lab</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+h1 {
+  text-align: center;
+  padding: 10px;
+}
+
+#panel {
+  width: 200px;
+  height: 100vh;
+  background: #111827;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 10px;
+}
+
+.component {
+  width: 120px;
+  padding: 10px;
+  margin: 10px;
+  background: #1f2937;
+  text-align: center;
+  cursor: grab;
+  border-radius: 8px;
+}
+
+#board {
+  margin-left: 220px;
+  height: 100vh;
+  background: #0b1220;
+  position: relative;
+}
+
+.item {
+  position: absolute;
+  padding: 10px;
+  background: yellow;
+  color: black;
+  border-radius: 6px;
+  cursor: move;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⚡ Drag & Drop Electronics Lab</h1>
+
+<div id="panel">
+  <div class="component" draggable="true" ondragstart="drag(event)" data-name="Battery 🔋">Battery 🔋</div>
+  <div class="component" draggable="true" ondragstart="drag(event)" data-name="LED 💡">LED 💡</div>
+  <div class="component" draggable="true" ondragstart="drag(event)" data-name="Resistor 🔌">Resistor 🔌</div>
+</div>
+
+<div id="board" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+<script>
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.getAttribute("data-name"));
+}
+
+function drop(ev) {
+  ev.preventDefault();
+
+  let data = ev.dataTransfer.getData("text");
+
+  let newItem = document.createElement("div");
+  newItem.className = "item";
+  newItem.innerHTML = data;
+
+  newItem.style.left = ev.offsetX + "px";
+  newItem.style.top = ev.offsetY + "px";
+
+  makeDraggable(newItem);
+
+  document.getElementById("board").appendChild(newItem);
+}
+
+function makeDraggable(el) {
+  let offsetX = 0, offsetY = 0, isDown = false;
+
+  el.onmousedown = function(e) {
+    isDown = true;
+    offsetX = e.offsetX;
+    offsetY = e.offsetY;
+  };
+
+  document.onmousemove = function(e) {
+    if (!isDown) return;
+
+    el.style.left = (e.pageX - 220 - offsetX) + "px";
+    el.style.top = (e.pageY - offsetY) + "px";
+  };
+
+  document.onmouseup = function() {
+    isDown = false;
+  };
+}
+
+</script>
+
+</body>
+    </html>
